@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
+//@RestController
 @SpringBootApplication
 public class Main {
 
 
     @GetMapping("/")
     public String home() {
-        return "TestASas";
+        return "nome";
     }
 
     public static void main(String[] args) {

@@ -6,10 +6,11 @@ spring:
     database: POSTGRESQL
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+      #ddl-auto: none
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/bookstore
-    username: webedi
-    password: 123456
+    username: postgres
+    password: admin
     driverClassName: org.postgresql.Driver

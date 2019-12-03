@@ -13,8 +13,5 @@ public interface UserRepository extends CrudRepository<User, Long> { // Long: Ty
 
     User findByUserName(String userName);
 
-    List<User> findByFullNameLike(String fullName);
-
-
 
 }

@@ -1,9 +1,6 @@
 package ru.bookstore.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Rubanov.Maksim on 03.12.2019.
@@ -13,8 +10,9 @@ import javax.persistence.Table;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "USER_ID")
-    private Long userId;
+    private long userId;
 
     @Column(name = "USER_NAME")
     private String userName;
@@ -23,7 +21,7 @@ public class User {
     private String encrytedPassword;
 
     @Column(name = "ENABLED")
-    private boolean enabled;
+    private boolean enabled = true;
 
     public User() {
     }

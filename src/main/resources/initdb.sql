@@ -4,7 +4,7 @@ create table "user"
   USER_ID           BIGINT not null,
   USER_NAME         VARCHAR(36) not null,
   ENCRYTED_PASSWORD VARCHAR(128) not null,
-  ENABLED           Int not null
+  ENABLED           BOOLEAN  not null
 ) ;
 --
 alter table "user"
@@ -66,10 +66,10 @@ CREATE TABLE Persistent_Logins (
 --------------------------------------
 
 insert into "user" (USER_ID, USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values (2, 'dbuser1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 1);
+values (2, 'admin1', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
 insert into "user" (USER_ID, USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values (1, 'dbadmin1', '$2a$10$PrI5Gk9L.tSZiW9FXhTS8O8Mz9E97k2FZbFvGFFaSsiTUIl.TCrFu', 1);
+values (1, 'admin', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
 ---
 

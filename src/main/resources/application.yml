@@ -11,8 +11,6 @@ spring:
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/bookstore
-#    username: webedi
-#    password: 111111
     username: postgres
     password: admin
     driverClassName: org.postgresql.Driver

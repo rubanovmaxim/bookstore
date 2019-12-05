@@ -10,7 +10,8 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "user_id_seq")
+//    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize =1)
     @Column(name = "USER_ID")
     private long userId;
 
@@ -27,7 +28,7 @@ public class User {
     }
 
 
-    public User(Long userId, String userName, String encrytedPassword, boolean enabled) {
+    public User(long userId, String userName, String encrytedPassword, boolean enabled) {
         this.userId = userId;
         this.userName = userName;
         this.encrytedPassword = encrytedPassword;
@@ -35,12 +36,12 @@ public class User {
     }
 
 
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
     }
 
 
-    public void setUserId(Long userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

@@ -11,19 +11,19 @@ import javax.persistence.*;
 @Table(name="\"role\"")
 public class Role {
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "role_id_seq")
     @Column(name = "ROLE_ID")
     private Long roleId;
 
     @Column(name = "ROLE_NAME")
-    private Long roleName;
+    private String roleName;
 
 
     public Role() {
 
     }
 
-    public Role(Long roleId, Long roleName) {
+    public Role(Long roleId, String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
     }
@@ -36,11 +36,11 @@ public class Role {
         this.roleId = roleId;
     }
 
-    public Long getRoleName() {
+    public String getRoleName() {
         return roleName;
     }
 
-    public void setRoleName(Long roleName) {
+    public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
 }

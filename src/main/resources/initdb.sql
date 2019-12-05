@@ -1,7 +1,8 @@
+CREATE SEQUENCE user_id_seq;
 -- Create table
 create table "user"
 (
-  USER_ID           BIGINT not null,
+  USER_ID           BIGINT not null DEFAULT nextval('user_id_seq'),
   USER_NAME         VARCHAR(36) not null,
   ENCRYTED_PASSWORD VARCHAR(128) not null,
   ENABLED           BOOLEAN  not null
@@ -15,9 +16,11 @@ alter table "user"
 
 
 -- Create table
+CREATE SEQUENCE role_id_seq;
+
 create table ROLE
 (
-  ROLE_ID   BIGINT not null,
+  ROLE_ID   BIGINT not null DEFAULT nextval('role_id_seq'),
   ROLE_NAME VARCHAR(30) not null
 ) ;
 --
@@ -29,9 +32,11 @@ alter table ROLE
 
 
 -- Create table
+CREATE SEQUENCE user_role_id_seq;
+
 create table USER_ROLE
 (
-  ID      BIGINT not null,
+  ID      BIGINT not null DEFAULT nextval('user_role_id_seq'),
   USER_ID BIGINT not null,
   ROLE_ID BIGINT not null
 );
@@ -65,16 +70,16 @@ CREATE TABLE Persistent_Logins (
 
 
 -- Create table
-create table BOOKS
+create table BOOK
 (
   ID           BIGINT not null,
   P_HOUSE_ID   BIGINT not null,
-  NAME         VARCHAR(36) not null,
+  NAME         VARCHAR(300) not null,
   AUTHOR VARCHAR(128) not null
 
 ) ;
 --
-alter table BOOKS
+alter table BOOK
   add constraint BOOK_PK primary key (ID);
 
 
@@ -111,7 +116,7 @@ create table BASKET
 );
 --
 
-alter table BOOKS
+alter table BOOK
   add constraint BOOK_FK1 foreign key (P_HOUSE_ID)
   references PUBLISHING_HOUSE (ID);
 
@@ -126,35 +131,35 @@ alter table BASKET
 
 alter table BASKET
   add constraint BASKET_FK2 foreign key (BOOK_ID)
-  references BOOKS (ID);
+  references BOOK (ID);
 
 
 --------------------------------------
 
-insert into "user" (USER_ID, USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values (2, 'admin1', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
+insert into "user" ( USER_NAME, ENCRYTED_PASSWORD, ENABLED)
+values ( 'admin1', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
-insert into "user" (USER_ID, USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values (1, 'admin', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
-
----
-
-insert into role (ROLE_ID, ROLE_NAME)
-values (1, 'ADMIN');
-
-insert into role (ROLE_ID, ROLE_NAME)
-values (2, 'USER');
+insert into "user" ( USER_NAME, ENCRYTED_PASSWORD, ENABLED)
+values ( 'admin', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
 ---
 
-insert into user_role (ID, USER_ID, ROLE_ID)
-values (1, 1, 1);
+insert into role ( ROLE_NAME)
+values ( 'ADMIN');
 
-insert into user_role (ID, USER_ID, ROLE_ID)
-values (2, 1, 2);
+insert into role (ROLE_NAME)
+values ('USER');
 
-insert into user_role (ID, USER_ID, ROLE_ID)
-values (3, 2, 2);
+---
+
+insert into user_role ( USER_ID, ROLE_ID)
+values ( 1, 1);
+
+insert into user_role ( USER_ID, ROLE_ID)
+values ( 1, 2);
+
+insert into user_role (USER_ID, ROLE_ID)
+values ( 2, 2);
 
 insert into PUBLISHING_HOUSE (ID, NAME, ADDRESS, PHONE)
 values (1, 'Москва', 'Россия , г.Москва, Кремль', '8-905-208-15-22');
@@ -165,10 +170,10 @@ values (2, 'Питер', 'Россия ,г. СПб, пр. КОролева 50', 
 ---
 
 
-insert into BOOKS (ID, P_HOUSE_ID, NAME, AUTHOR)
+insert into BOOK (ID, P_HOUSE_ID, NAME, AUTHOR)
 values (1, 1, 'Руслан и Людмила', 'Пушкин А.С.');
 
-insert into BOOKS (ID, P_HOUSE_ID, NAME, AUTHOR)
+insert into BOOK (ID, P_HOUSE_ID, NAME, AUTHOR)
 values (2, 2, 'Война и мир', 'Толстой Л.Н');
 
 ---

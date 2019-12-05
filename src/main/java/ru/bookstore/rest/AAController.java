@@ -16,6 +16,7 @@ import ru.bookstore.domain.User;
 import ru.bookstore.domain.UserInfo;
 import ru.bookstore.domain.UserRole;
 import ru.bookstore.domain.enums.RoleEnum;
+import ru.bookstore.repositories.BookRepository;
 import ru.bookstore.repositories.RoleRepository;
 import ru.bookstore.repositories.UserRepository;
 import ru.bookstore.repositories.UserRoleRepository;
@@ -23,13 +24,16 @@ import ru.bookstore.repositories.UserRoleRepository;
 //import org.springframework.security.core.userdetails.User;
 
 @RestController
-public class AAService {
+public class AAController {
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     UserRoleRepository userRoleRepository;
+
+    @Autowired
+    BookRepository bookRepository;
 
 
     @GetMapping("/public")
@@ -39,6 +43,7 @@ public class AAService {
 
     @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String registration(@RequestBody(required = true) UserInfo userInfo) {
+        bookRepository.findAll();
         User user = new User();
         user.setUserName(userInfo.getUserName());
         user.setEncrytedPassword(encrytePassword(userInfo.getPassword()));

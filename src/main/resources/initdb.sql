@@ -63,6 +63,72 @@ CREATE TABLE Persistent_Logins (
 
 );
 
+
+-- Create table
+create table BOOKS
+(
+  ID           BIGINT not null,
+  P_HOUSE_ID   BIGINT not null,
+  NAME         VARCHAR(36) not null,
+  AUTHOR VARCHAR(128) not null
+
+) ;
+--
+alter table BOOKS
+  add constraint BOOK_PK primary key (ID);
+
+
+
+-- Create table
+create table PUBLISHING_HOUSE
+(
+  ID  BIGINT not null,
+  NAME VARCHAR(30) not null,
+  ADDRESS VARCHAR(200) not null,
+  PHONE VARCHAR(15) not null
+) ;
+--
+alter table  PUBLISHING_HOUSE
+  add constraint PUBLISHING_HOUSE_PK primary key (ID);
+
+
+-- Create table
+create table "order"
+(
+  ID  BIGINT not null,
+  USER_ID  BIGINT not null,
+  STATUIS VARCHAR(30) not null
+);
+alter table  "order"
+  add constraint ORDER_PK primary key (ID);
+
+
+-- Create table
+create table BASKET
+(
+  ORDER_ID BIGINT not null,
+  BOOK_ID  BIGINT not null
+);
+--
+
+alter table BOOKS
+  add constraint BOOK_FK1 foreign key (P_HOUSE_ID)
+  references PUBLISHING_HOUSE (ID);
+
+alter table "order"
+  add constraint ORDER_FK1 foreign key (USER_ID)
+  references "user" (USER_ID);
+
+
+alter table BASKET
+  add constraint BASKET_FK1 foreign key (ORDER_ID)
+  references "order" (ID);
+
+alter table BASKET
+  add constraint BASKET_FK2 foreign key (BOOK_ID)
+  references BOOKS (ID);
+
+
 --------------------------------------
 
 insert into "user" (USER_ID, USER_NAME, ENCRYTED_PASSWORD, ENABLED)
@@ -89,5 +155,21 @@ values (2, 1, 2);
 
 insert into user_role (ID, USER_ID, ROLE_ID)
 values (3, 2, 2);
+
+insert into PUBLISHING_HOUSE (ID, NAME, ADDRESS, PHONE)
+values (1, 'Москва', 'Россия , г.Москва, Кремль', '8-905-208-15-22');
+
+insert into PUBLISHING_HOUSE (ID, NAME, ADDRESS, PHONE)
+values (2, 'Питер', 'Россия ,г. СПб, пр. КОролева 50', '8-911-408-15-57');
+
+---
+
+
+insert into BOOKS (ID, P_HOUSE_ID, NAME, AUTHOR)
+values (1, 1, 'Руслан и Людмила', 'Пушкин А.С.');
+
+insert into BOOKS (ID, P_HOUSE_ID, NAME, AUTHOR)
+values (2, 2, 'Война и мир', 'Толстой Л.Н');
+
 ---
 Commit;

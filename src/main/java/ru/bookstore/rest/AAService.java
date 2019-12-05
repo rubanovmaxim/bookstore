@@ -66,7 +66,7 @@ public class AAService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         System.out.println(userDetails.getUsername());
 
-        User user = userRepository.findByUserName("dbadmin1");
+        User user = userRepository.findByUserName("admin");
         System.out.println(user.getEncrytedPassword());
         return "after_authentication";
     }

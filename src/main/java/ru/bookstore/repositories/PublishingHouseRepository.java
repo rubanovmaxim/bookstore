@@ -1,8 +1,7 @@
 package ru.bookstore.repositories;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.bookstore.domain.Basket;
 import ru.bookstore.domain.PublishingHouse;
 
 
@@ -11,6 +10,6 @@ import ru.bookstore.domain.PublishingHouse;
  */
 
 @Repository
-public interface PublishingHouseRepository extends CrudRepository<PublishingHouse, Long> {
+public interface PublishingHouseRepository extends JpaRepository<PublishingHouse, Long> {
 
 }

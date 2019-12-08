@@ -4,10 +4,14 @@ package ru.bookstore.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name="basket")
-public class Basket {
+@Table(name = "ORDER_CONTENT")
+public class OrderContent {
 
     @Id
+    @GeneratedValue(generator = "order_content_id_seq")
+    @Column(name = "ID")
+    private Long id;
+
     @Column(name = "ORDER_ID")
     private Long orderId;
 
@@ -15,15 +19,22 @@ public class Basket {
     private Long bookId;
 
 
-    public Basket() {
+    public OrderContent() {
     }
 
-
-    public Basket(Long orderId, Long bookId) {
+    public OrderContent(Long orderId,Long bookId) {
         this.orderId = orderId;
         this.bookId = bookId;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getOrderId() {
         return orderId;

@@ -1,6 +1,8 @@
 package ru.bookstore.rest;
 
 
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -8,6 +10,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +26,7 @@ import ru.bookstore.repositories.UserRoleRepository;
 //import org.springframework.security.core.userdetails.User;
 
 @RestController
-public class AAController {
+public class UserController {
 
 
     private UserRepository userRepository;
@@ -31,7 +35,7 @@ public class AAController {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    public AAController(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public UserController(UserRepository userRepository, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
     }
@@ -41,6 +45,7 @@ public class AAController {
         return "public";
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ObjectNotFoundException.class, ConstraintViolationException.class})
     @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String registration(@RequestBody(required = true) UserInfo userInfo) {
         User user = new User();

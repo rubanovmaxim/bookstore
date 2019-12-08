@@ -24,7 +24,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/public").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/authentication", "/after_authentication").authenticated()
+                .authorizeRequests().antMatchers(
+                        "/authentication",
+                                    "/after_authentication",
+                                    "/order/add/book/**"
+        ).authenticated()
                 .and()
                 // Включает Form-based аутентификацию
                 .formLogin()

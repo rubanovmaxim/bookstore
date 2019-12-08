@@ -70,12 +70,16 @@ CREATE TABLE Persistent_Logins (
 
 
 -- Create table
+
+CREATE SEQUENCE book_id_seq;
+
 create table BOOK
 (
-  ID           BIGINT not null,
+  ID           BIGINT not null DEFAULT nextval('book_id_seq'),
   P_HOUSE_ID   BIGINT not null,
   NAME         VARCHAR(300) not null,
-  AUTHOR VARCHAR(128) not null
+  AUTHOR VARCHAR(128) not null,
+  PRICE DOUBLE PRECISION not null
 
 ) ;
 --
@@ -85,9 +89,11 @@ alter table BOOK
 
 
 -- Create table
+CREATE SEQUENCE publishing_house_id_seq;
+
 create table PUBLISHING_HOUSE
 (
-  ID  BIGINT not null,
+  ID  BIGINT not null DEFAULT nextval('publishing_house_id_seq'),
   NAME VARCHAR(30) not null,
   ADDRESS VARCHAR(200) not null,
   PHONE VARCHAR(15) not null
@@ -98,40 +104,62 @@ alter table  PUBLISHING_HOUSE
 
 
 -- Create table
+CREATE SEQUENCE order_id_seq;
+
 create table "order"
 (
-  ID  BIGINT not null,
+  ID  BIGINT not null DEFAULT nextval('order_id_seq'),
   USER_ID  BIGINT not null,
-  STATUIS VARCHAR(30) not null
+  STATUS VARCHAR(30) not null
 );
+
 alter table  "order"
   add constraint ORDER_PK primary key (ID);
-
-
--- Create table
-create table BASKET
-(
-  ORDER_ID BIGINT not null,
-  BOOK_ID  BIGINT not null
-);
---
-
-alter table BOOK
-  add constraint BOOK_FK1 foreign key (P_HOUSE_ID)
-  references PUBLISHING_HOUSE (ID);
 
 alter table "order"
   add constraint ORDER_FK1 foreign key (USER_ID)
   references "user" (USER_ID);
 
+-- Create table
+CREATE SEQUENCE order_content_id_seq;
 
-alter table BASKET
-  add constraint BASKET_FK1 foreign key (ORDER_ID)
+create table ORDER_CONTENT
+(
+  ID  BIGINT not null DEFAULT nextval('order_content_id_seq'),
+  ORDER_ID BIGINT not null,
+  BOOK_ID  BIGINT not null
+);
+
+
+alter table ORDER_CONTENT
+  add constraint ORDER_CONTENT_FK1 foreign key (ORDER_ID)
   references "order" (ID);
 
-alter table BASKET
-  add constraint BASKET_FK2 foreign key (BOOK_ID)
+alter table ORDER_CONTENT
+  add constraint ORDER_CONTENT_FK2 foreign key (BOOK_ID)
   references BOOK (ID);
+
+
+-- -- Create table
+-- create table BASKET
+-- (
+--   USER_ID BIGINT not null,
+--   BOOK_ID  BIGINT not null
+-- );
+-- --
+
+alter table BOOK
+  add constraint BOOK_FK1 foreign key (P_HOUSE_ID)
+  references PUBLISHING_HOUSE (ID);
+
+
+-- alter table BASKET
+--   add constraint BASKET_FK1 foreign key (USER_ID)
+--   references "user" (USER_ID);
+--
+-- alter table BASKET
+--   add constraint BASKET_FK2 foreign key (BOOK_ID)
+--   references BOOK (ID);
 
 
 --------------------------------------
@@ -161,20 +189,20 @@ values ( 1, 2);
 insert into user_role (USER_ID, ROLE_ID)
 values ( 2, 2);
 
-insert into PUBLISHING_HOUSE (ID, NAME, ADDRESS, PHONE)
-values (1, 'Москва', 'Россия , г.Москва, Кремль', '8-905-208-15-22');
+insert into PUBLISHING_HOUSE ( NAME, ADDRESS, PHONE)
+values ( 'Москва', 'Россия , г.Москва, Кремль', '8-905-208-15-22');
 
-insert into PUBLISHING_HOUSE (ID, NAME, ADDRESS, PHONE)
-values (2, 'Питер', 'Россия ,г. СПб, пр. КОролева 50', '8-911-408-15-57');
+insert into PUBLISHING_HOUSE ( NAME, ADDRESS, PHONE)
+values ( 'Питер', 'Россия ,г. СПб, пр. КОролева 50', '8-911-408-15-57');
 
 ---
 
 
-insert into BOOK (ID, P_HOUSE_ID, NAME, AUTHOR)
-values (1, 1, 'Руслан и Людмила', 'Пушкин А.С.');
+insert into BOOK ( P_HOUSE_ID, NAME, AUTHOR, PRICE)
+values ( 1, 'Руслан и Людмила', 'Пушкин А.С.',200);
 
-insert into BOOK (ID, P_HOUSE_ID, NAME, AUTHOR)
-values (2, 2, 'Война и мир', 'Толстой Л.Н');
+insert into BOOK ( P_HOUSE_ID, NAME, AUTHOR, PRICE)
+values ( 2, 'Война и мир', 'Толстой Л.Н',300);
 
 ---
 Commit;

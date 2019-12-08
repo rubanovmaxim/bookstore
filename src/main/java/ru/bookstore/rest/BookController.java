@@ -3,8 +3,8 @@ package ru.bookstore.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.bookstore.domain.Book;
 import ru.bookstore.repositories.BookRepository;
 import ru.bookstore.repositories.PublishingHouseRepository;
 
@@ -18,7 +18,7 @@ public class BookController {
     private PublishingHouseRepository pblishingHouseRepository;
 
     @Autowired
-    public BookController(BookRepository bookRepository,PublishingHouseRepository pblishingHouseRepository) {
+    public BookController(BookRepository bookRepository, PublishingHouseRepository pblishingHouseRepository) {
         this.bookRepository = bookRepository;
         this.pblishingHouseRepository = pblishingHouseRepository;
 
@@ -30,9 +30,27 @@ public class BookController {
         return ResponseEntity.ok().body(bookRepository.findAll());
     }
 
-    @GetMapping("/books/publishinghouse")
-    public ResponseEntity<List> getPublishingHouseRepository() {
-        return ResponseEntity.ok().body(pblishingHouseRepository.findAll());
+
+    @PostMapping("/books/new")
+    public ResponseEntity<Book> addBook(@RequestBody(required = true) Book book) {
+        book.setId(null);
+        book = bookRepository.save(book);
+        return ResponseEntity.ok().body(book);
+    }
+
+
+    @PutMapping("/books/update/{bookId}")
+    public ResponseEntity<Book> updateBook(@PathVariable("bookId") long bookId, @RequestBody(required = true) Book book) {
+        book.setId(bookId);
+        book = bookRepository.save(book);
+        return ResponseEntity.ok().body(book);
+    }
+
+
+    @DeleteMapping("/books/delete/{bookId}")
+    public ResponseEntity deleteBook(@PathVariable("bookId") long bookId) {
+        bookRepository.deleteById(bookId);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "order_id_seq")
     @Column(name = "ID")
     private Long id;
 
@@ -16,16 +16,16 @@ public class Order {
     private Long userId;
 
 
-    @Column(name = "STATUIS")
-    private String statuis;
+    @Column(name = "STATUS")
+    private String status;
 
 
     public Order() {
     }
 
-    public Order(Long userId, String statuis) {
+    public Order(Long userId, String status) {
         this.userId = userId;
-        this.statuis = statuis;
+        this.status = status;
     }
 
     public Long getId() {
@@ -44,11 +44,12 @@ public class Order {
         this.userId = userId;
     }
 
-    public String getStatuis() {
-        return statuis;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatuis(String statuis) {
-        this.statuis = statuis;
+    public void setStatus(String status) {
+        this.status = status;
     }
+
 }

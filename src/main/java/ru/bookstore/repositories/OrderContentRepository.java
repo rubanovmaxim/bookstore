@@ -3,6 +3,9 @@ package ru.bookstore.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.bookstore.domain.Order;
+import ru.bookstore.domain.OrderContent;
+
+import java.util.List;
 
 
 /**
@@ -10,6 +13,7 @@ import ru.bookstore.domain.Order;
  */
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderContentRepository extends JpaRepository<OrderContent, Long> {
 
+    List<OrderContent> findAllByOrderId(Long orderId);
 }

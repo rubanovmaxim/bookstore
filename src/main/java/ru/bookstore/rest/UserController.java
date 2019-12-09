@@ -1,6 +1,8 @@
 package ru.bookstore.rest;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import ru.bookstore.repositories.UserRoleRepository;
 
 //import org.springframework.security.core.userdetails.User;
 
+@Api(tags = "UserController", description = "Контроллер для авторизации, регистрации пользователей")
 @RestController
 public class UserController {
 
@@ -59,6 +62,7 @@ public class UserController {
         return "registration was successful";
     }
 
+    @ApiOperation(value = "Метод для аутентификации",  tags = "authenticatedPage")
     @GetMapping("/authentication")
     public String authenticatedPage() {
         SecurityContext securityContext = SecurityContextHolder.getContext();

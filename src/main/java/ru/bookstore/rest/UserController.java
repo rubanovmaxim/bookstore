@@ -42,11 +42,11 @@ public class UserController {
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
     }
-
-    @GetMapping("/public")
-    public String publicPage() {
-        return "public";
-    }
+//
+//    @GetMapping("/public")
+//    public String publicPage() {
+//        return "public";
+//    }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ObjectNotFoundException.class, ConstraintViolationException.class})
     @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -69,20 +69,20 @@ public class UserController {
         Authentication authentication = securityContext.getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         System.out.println(userDetails.getUsername());
-        return "authenticated";
+        return "login was successful";
     }
 
-    @GetMapping("/after_authentication")
-    public String afterAuthentication() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        System.out.println(userDetails.getUsername());
-
-        User user = userRepository.findByUserName("admin");
-        System.out.println(user.getEncrytedPassword());
-        return "after_authentication";
-    }
+//    @GetMapping("/after_authentication")
+//    public String afterAuthentication() {
+//        SecurityContext securityContext = SecurityContextHolder.getContext();
+//        Authentication authentication = securityContext.getAuthentication();
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        System.out.println(userDetails.getUsername());
+//
+//        User user = userRepository.findByUserName("admin");
+//        System.out.println(user.getEncrytedPassword());
+//        return "after_authentication";
+//    }
 
 
     public static String encrytePassword(String password) {

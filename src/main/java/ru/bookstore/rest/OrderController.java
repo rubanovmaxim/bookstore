@@ -16,6 +16,8 @@ import ru.bookstore.repositories.OrderContentRepository;
 import ru.bookstore.repositories.OrderRepository;
 import ru.bookstore.repositories.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Api(tags = "OrderController", description = "Контроллер для работы с заказами")
@@ -43,24 +45,36 @@ public class OrderController {
 
     @ApiOperation(value = "Добавление книги в щзаказ", response = OrderContent.class, tags = "addBookFromOrder")
     @PostMapping("/order/add/book/{orderId}")
-    public ResponseEntity<OrderContent> addBookFromOrder(@PathVariable(name="orderId",required = false) Long orderId,@RequestBody(required = true) Book book) {
+    public ResponseEntity<List<OrderContent>> addBookFromOrder(@PathVariable(name="orderId",required = false) Long orderId,@RequestBody(required = true) List<Long> bookIds) {
+        if(bookIds == null || bookIds.size() == 0){
+            return  ResponseEntity.ok().body(Collections.emptyList());
+        }
+
         if(orderId < 0 ){
             User user = getCurrentUser();
             Order order  = new Order(user.getUserId(),OrderStatus.BASKET.name());
             order = orderRepository.save(order);
             orderId = order.getId();
         }
-        OrderContent orderContent = new OrderContent(orderId,book.getId());
-        orderContentRepository.save(orderContent);
-        return ResponseEntity.ok().body(orderContent);
+
+        List<OrderContent> result = new ArrayList<>();
+        OrderContent orderContent = null;
+        for ( Long id: bookIds ){
+            orderContent = new OrderContent(orderId, id);
+            orderContentRepository.save(orderContent);
+            result.add( orderContent );
+        }
+        return ResponseEntity.ok().body(result);
     }
 
 
     @ApiOperation(value = "Удаление книги из заказа", response = ResponseEntity.class, tags = "deleteBookFromOrder")
     @DeleteMapping("/order/delete/book/{orderId}")
-    public ResponseEntity deleteBookFromOrder(@PathVariable(name="orderId") Long orderId,@RequestBody(required = true) Book book) {
-        OrderContent orderContent = new OrderContent(orderId,book.getId());
-        orderContentRepository.delete(orderContent);
+    public ResponseEntity deleteBookFromOrder(@PathVariable(name="orderId") Long orderId,@RequestBody(required = true) List<Long> bookIds) {
+        for (  Long id: bookIds  ){
+            OrderContent orderContent = new OrderContent(orderId,id);
+            orderContentRepository.delete(orderContent);
+        }
         return ResponseEntity.ok().build();
     }
 

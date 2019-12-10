@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(
                         "/authentication",
-                                    "/after_authentication",
+                                    //"/after_authentication",
                                     "/order/add/book/**"
         ).authenticated()
                 .and()

@@ -26,8 +26,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(
                         "/authentication",
-                                    //"/after_authentication",
-                                    "/order/add/book/**"
+                "/order/add/book/**",
+                "/books/delete",
+                "/books/new",
+                "/books/update/**"
+
+
         ).authenticated()
                 .and()
                 // Включает Form-based аутентификацию

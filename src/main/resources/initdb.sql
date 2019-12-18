@@ -4,6 +4,8 @@ create table "user"
 (
   USER_ID           BIGINT not null DEFAULT nextval('user_id_seq'),
   USER_NAME         VARCHAR(36) not null,
+  E_MAIL            VARCHAR(100) not null,
+  PHONE             VARCHAR(20) not null,
   ENCRYTED_PASSWORD VARCHAR(128) not null,
   ENABLED           BOOLEAN  not null
 ) ;
@@ -164,11 +166,11 @@ alter table BOOK
 
 --------------------------------------
 
-insert into "user" ( USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values ( 'admin1', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
+insert into "user" ( USER_NAME,E_MAIL,PHONE, ENCRYTED_PASSWORD, ENABLED)
+values ( 'admin1', 'maksru@mail.ru' ,'+79632463534','$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
-insert into "user" ( USER_NAME, ENCRYTED_PASSWORD, ENABLED)
-values ( 'admin', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
+insert into "user" ( USER_NAME,E_MAIL,PHONE, ENCRYTED_PASSWORD, ENABLED)
+values ( 'admin', 'maksru@mail.ru' ,'+79632463534', '$2a$10$xvVCsGs9H0sxf19Y3wJ3L.N08rqofZhbJX2MErDzywRUKzV6n9DI6', true);
 
 ---
 

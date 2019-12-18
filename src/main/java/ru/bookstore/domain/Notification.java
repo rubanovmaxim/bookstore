@@ -5,14 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by Rubanov.Maksim on 04.12.2019.
  */
-public class UserInfo {
+public class Notification {
 
 
     @JsonProperty("username")
     private String userName;
-
-    @JsonProperty("user_id")
-    private long userId;
 
     @JsonProperty("e_mail")
     private String eMail;
@@ -20,15 +17,12 @@ public class UserInfo {
     @JsonProperty("phone")
     private String phone;
 
-    @JsonProperty("password")
-    private String password;
+    @JsonProperty("message")
+    private String message;
+
 
     public String getUserName() {
         return userName;
-    }
-
-    public long getUserId() {
-        return userId;
     }
 
     public String getEMail() {
@@ -43,10 +37,6 @@ public class UserInfo {
         this.userName = userName;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
     @JsonProperty("e_mail")
     public void setEMail(String eMail) {
         this.eMail = eMail;
@@ -56,11 +46,11 @@ public class UserInfo {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getMessage() {
+        return message;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

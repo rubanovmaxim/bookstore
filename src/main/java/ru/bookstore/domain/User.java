@@ -18,6 +18,12 @@ public class User {
     @Column(name = "USER_NAME")
     private String userName;
 
+    @Column(name = "E_MAIL")
+    private String eMail;
+
+    @Column(name = "PHONE")
+    private String phone;
+
     @Column(name = "ENCRYTED_PASSWORD")
     private String encrytedPassword;
 
@@ -27,24 +33,21 @@ public class User {
     public User() {
     }
 
-
-    public User(long userId, String userName, String encrytedPassword, boolean enabled) {
-        this.userId = userId;
+    public User(String userName, String eMail, String phone, String encrytedPassword, boolean enabled) {
         this.userName = userName;
+        this.eMail = eMail;
+        this.phone = phone;
         this.encrytedPassword = encrytedPassword;
         this.enabled = enabled;
     }
-
 
     public long getUserId() {
         return userId;
     }
 
-
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
 
     public String getUserName() {
         return userName;
@@ -54,10 +57,25 @@ public class User {
         this.userName = userName;
     }
 
+    public String getEMail() {
+        return eMail;
+    }
+
+    public void setEMail(String eMail) {
+        this.eMail = eMail;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getEncrytedPassword() {
         return encrytedPassword;
     }
-
 
     public void setEncrytedPassword(String encrytedPassword) {
         this.encrytedPassword = encrytedPassword;

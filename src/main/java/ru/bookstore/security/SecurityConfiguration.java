@@ -26,6 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(
                         "/authentication",
+                "/order/confirm/**",
                 "/order/add/book/**",
                 "/books/delete",
                 "/books/new",

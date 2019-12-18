@@ -1,6 +1,8 @@
 server:
   port: 8082
-
+logging:
+  level:
+    ROOT: INFO
 spring:
   jpa:
     database: POSTGRESQL
@@ -16,7 +18,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/bookstore
     username: postgres
     password: admin
-#    username: webedi
-#    password: 111111
+    #    username: webedi
+    #    password: 111111
     driverClassName: org.postgresql.Driver
-

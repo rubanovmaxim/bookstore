@@ -19,11 +19,9 @@ import ru.bookstore.repositories.UserRepository;
 public class NotificationController {
 
     private ApplicationEventPublisher applicationEventPublisher;
-    private UserRepository userRepository;
 
     @Autowired
-    public NotificationController(UserRepository userRepository, ApplicationEventPublisher applicationEventPublisher) {
-        this.userRepository = userRepository;
+    public NotificationController(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
 
     }

@@ -12,7 +12,7 @@ import ru.bookstore.events.NotificationEvent;
  * Created by Rubanov.Maksim on 17.12.2019.
  */
 @Component("push_notification")
-public class PushServiceImpl implements NotificationService {
+public class PushServiceImpl implements NotificationListener {
     public static final String ACCOUNT_SID = "ACf0121f8793eb1aae75b24a9daec1b3f7";
     public static final String AUTH_TOKEN = "6f15198b70b994f17b144ffabdbc2a9d";
 

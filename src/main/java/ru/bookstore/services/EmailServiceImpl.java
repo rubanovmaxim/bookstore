@@ -15,7 +15,7 @@ import java.util.Properties;
  * Created by Rubanov.Maksim on 17.12.2019.
  */
 @Component("email_notification")
-public class EmailServiceImpl implements NotificationService {
+public class EmailServiceImpl implements NotificationListener {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
     private final static String username = "rubanov.test.otus@mail.ru";

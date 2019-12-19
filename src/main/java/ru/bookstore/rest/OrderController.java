@@ -74,7 +74,9 @@ public class OrderController {
 
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ObjectNotFoundException.class, ConstraintViolationException.class})
-    @ApiOperation(value = "Добавление книг(и) в заказ.JSON массив из id книг, добавляемых в заказ. При этом в запросе нужно передать id заказа(orderId), если заказ новый передать '-1'.", response = OrderContent.class, tags = "addBookFromOrder")
+    @ApiOperation(value = "Добавление книг(и) в заказ.JSON массив из id книг, добавляемых в заказ.\n" +
+            "При этом в запросе нужно передать id заказа(orderId), если заказ новый передать '-1'.\n" +
+            "После добавления вернется заказ ,в которои уже будет его id, по которому можно что-то добавлять в заказ.", response = OrderContent.class, tags = "addBookFromOrder")
     @PostMapping("/order/add/book/{orderId}")
     public ResponseEntity<List<OrderContent>> addBookFromOrder(@PathVariable(name = "orderId", required = true) Long orderId, @RequestBody(required = true) List<Long> bookIds) {
         if (bookIds == null || bookIds.size() == 0) {
@@ -88,14 +90,13 @@ public class OrderController {
             orderId = order.getId();
         }
 
-        List<OrderContent> result = new ArrayList<>();
         OrderContent orderContent = null;
         for (Long id : bookIds) {
             orderContent = new OrderContent(orderId, id);
             orderContentRepository.save(orderContent);
-            result.add(orderContent);
+
         }
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().body(orderContentRepository.findAllByOrderId(orderId));
     }
 
 

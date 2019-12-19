@@ -30,7 +30,7 @@ public class NotificationController {
 
 
     @ApiOperation(value = "Метод отправляет сообщение пользователю на почту и телефон.", response = String.class, tags = "sendNotification")
-    @PostMapping("/notification/message/{message}")
+    @PostMapping("/notification/message")
     public ResponseEntity sendNotification(@RequestBody(required = true) Notification notification) {
 
         NotificationEvent notificationEvent = new NotificationEvent(this, notification);

@@ -2,14 +2,13 @@ package ru.bookstore.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import ru.bookstore.domain.Notification;
+import ru.bookstore.domain.NotificationProvider;
+import ru.bookstore.domain.enums.NotificationType;
 import ru.bookstore.events.NotificationEvent;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
 
 /**
  * Created by Rubanov.Maksim on 17.12.2019.
@@ -18,50 +17,25 @@ import java.util.Properties;
 public class EmailServiceImpl implements NotificationListener {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
-    private final static String username = "rubanov.test.otus@mail.ru";
-    private final static String password = "test.otus";
+
+    @Autowired
+    public JavaMailSender emailSender;
 
 
     @Override
     public void onApplicationEvent(NotificationEvent notificationEvent) {
-        Notification notification = notificationEvent.getNotification();
-        LOGGER.info("Try to send email message:" + notification.getMessage() + " to email:" + notification.getEMail());
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.mail.ru");
-        prop.put("mail.smtp.port", "25");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.socketFactory.port", "25");
-        prop.put("mail.smtp.starttls.enable", "true");
-//        prop.put("mail.transport.protocol", "smtps");
-        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-
-        try {
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("rubanov.test.otus@mail.ru"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(notification.getEMail())
-            );
-            message.setSubject("Заказ книги");
-            message.setText(notification.getMessage());
-
-            Transport.send(message);
-
-            LOGGER.info("Email was send");
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        if (notificationEvent.getNotificationProvider().getNotificationType() != NotificationType.EMAIL) {
+            return;
         }
+        NotificationProvider notificationProvider = notificationEvent.getNotificationProvider();
+        LOGGER.info("Try to send email message:" + notificationProvider.getMessage() + " to email:" + notificationProvider.getReceiver());
 
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(notificationProvider.getReceiver());
+        message.setSubject("Заказ книг(и)");
+        message.setText(notificationProvider.getMessage());
+        emailSender.send(message);
 
+        LOGGER.info("Email was send");
     }
 }

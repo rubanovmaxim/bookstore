@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.bookstore.domain.Authority;
 import ru.bookstore.domain.User;
 import ru.bookstore.domain.UserInfo;
-import ru.bookstore.domain.UserRole;
 import ru.bookstore.domain.enums.RoleEnum;
+import ru.bookstore.repositories.AuthorityRepository;
 import ru.bookstore.repositories.UserRepository;
-import ru.bookstore.repositories.UserRoleRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,30 +37,28 @@ public class UserController {
 
     private UserRepository userRepository;
 
-
-    private UserRoleRepository userRoleRepository;
+    private AuthorityRepository authorityRepository;
 
     @Autowired
-    public UserController(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public UserController(UserRepository userRepository, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
+        this.authorityRepository = authorityRepository;
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ObjectNotFoundException.class, ConstraintViolationException.class})
     @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String registration(@RequestBody(required = true) UserInfo userInfo) {
+    public ResponseEntity<String> registration(@RequestBody(required = true) UserInfo userInfo) {
         User user = new User();
         user.setUserName(userInfo.getUserName());
         user.setEncrytedPassword(encrytePassword(userInfo.getPassword()));
         user.setEMail(userInfo.getEMail());
         user.setPhone(userInfo.getPhone());
         user = userRepository.save(user);
-        UserRole userRole = new UserRole();
-        userRole.setUserId(user.getUserId());
-        userRole.setRoleId(RoleEnum.USER.getRoleId());
-        userRole = userRoleRepository.save(userRole);
-        return "registration was successful";
+        Authority authority = new Authority();
+        authority.setUsername(user.getUserName());
+        authority.setAuthority(RoleEnum.USER.name());
+        authority = authorityRepository.save(authority);
+        return ResponseEntity.ok().body("registration was successful");
     }
 
     @ApiOperation(value = "Метод для аутентификации", tags = "authenticatedPage")

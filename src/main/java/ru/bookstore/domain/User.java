@@ -6,29 +6,30 @@ import javax.persistence.*;
  * Created by Rubanov.Maksim on 03.12.2019.
  */
 @Entity
-@Table(name="\"user\"")
+@Table(name="\"users\"")
 public class User {
 
     @Id
     @GeneratedValue(generator = "user_id_seq")
 //    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize =1)
-    @Column(name = "USER_ID")
-    private long userId;
+    @Column(name = "id")
+    private long Id;
 
-    @Column(name = "USER_NAME")
+    @Column(name = "username")
     private String userName;
 
-    @Column(name = "E_MAIL")
+    @Column(name = "e_mail")
     private String eMail;
 
-    @Column(name = "PHONE")
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "ENCRYTED_PASSWORD")
+    @Column(name = "password")
     private String encrytedPassword;
 
     @Column(name = "ENABLED")
     private boolean enabled = true;
+
 
     public User() {
     }
@@ -42,11 +43,11 @@ public class User {
     }
 
     public long getUserId() {
-        return userId;
+        return Id;
     }
 
     public void setUserId(long userId) {
-        this.userId = userId;
+        this.Id = userId;
     }
 
     public String getUserName() {

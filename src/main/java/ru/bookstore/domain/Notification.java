@@ -7,43 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Notification {
 
+    @JsonProperty(value = "user_id", required = true)
+    private long userId;
 
-    @JsonProperty("username")
-    private String userName;
-
-    @JsonProperty("e_mail")
-    private String eMail;
-
-    @JsonProperty("phone")
-    private String phone;
-
-    @JsonProperty("message")
+    @JsonProperty(value = "message", required = true)
     private String message;
 
 
-    public String getUserName() {
-        return userName;
+    public long getUserId() {
+        return userId;
     }
 
-    public String getEMail() {
-        return eMail;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    @JsonProperty("e_mail")
-    public void setEMail(String eMail) {
-        this.eMail = eMail;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getMessage() {
@@ -53,4 +29,5 @@ public class Notification {
     public void setMessage(String message) {
         this.message = message;
     }
+    
 }

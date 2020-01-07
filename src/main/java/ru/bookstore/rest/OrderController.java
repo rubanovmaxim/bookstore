@@ -21,10 +21,7 @@ import ru.bookstore.repositories.OrderContentRepository;
 import ru.bookstore.repositories.OrderRepository;
 import ru.bookstore.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Api(tags = "OrderController", description = "Контроллер для работы с заказами")
 @RestController
@@ -54,19 +51,25 @@ public class OrderController {
     @ApiOperation(value = "Отправка уведомления пользователю на email и телефон при подтверждении заказа", response = String.class, tags = "confirmOrder")
     @PostMapping("/order/confirm/{orderId}")
     public ResponseEntity confirmOrder(@PathVariable(name = "orderId", required = true) Long orderId) {
-        Optional<Order> orderOpt = orderRepository.findById(orderId);
+        User user = getCurrentUser();
+        //ищем заказ сразу и по его id и по пользователю, что бы исключить отправку заказа другим пользователем.
+        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
         if (!orderOpt.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There are no order with id=" + orderId);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There is no order with id=" + orderId + " or this order is not belong you");
         }
+
         Order order = orderOpt.get();
-        order.setStatus(OrderStatus.ORDER_FINISHED.name());
+        // проверяем , что заказ находится в состоянии "Корзина", что бы его можно было подтвердить.
+        //TODO передделать впоследствии на ORDER_FORMING(перейти к оформлению), когда это будет реализовано
+         if(! order.getStatus().equalsIgnoreCase(OrderStatus.BASKET.name())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order not in status=BASKET to be confirmed");
+        }
+        order.setStatus(OrderStatus.ORDER_CONFIRMED.name());
         order = orderRepository.save(order);
 
-        User user = userRepository.findById(order.getUserId()).get();
-
+       // User user = userRepository.findById(order.getUserId()).get();
         Notification notification = new Notification();
-        notification.setEMail(user.getEMail());
-        notification.setPhone(user.getPhone());
+        notification.setUserId(user.getUserId());
         notification.setMessage("Congradulation! Your order " + orderId + " will be delivered in 2 days.");
         notificationController.sendNotification(notification);
         return ResponseEntity.ok().build();
@@ -76,18 +79,25 @@ public class OrderController {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {ObjectNotFoundException.class, ConstraintViolationException.class})
     @ApiOperation(value = "Добавление книг(и) в заказ.JSON массив из id книг, добавляемых в заказ.\n" +
             "При этом в запросе нужно передать id заказа(orderId), если заказ новый передать '-1'.\n" +
-            "После добавления вернется заказ ,в которои уже будет его id, по которому можно что-то добавлять в заказ.", response = OrderContent.class, tags = "addBookFromOrder")
+            "После добавления вернется заказ ,в которои уже будет его id, по которому можно что-то добавлять в заказ.", response = OrderContent.class, tags = "addBookToOrder")
     @PostMapping("/order/add/book/{orderId}")
-    public ResponseEntity<List<OrderContent>> addBookFromOrder(@PathVariable(name = "orderId", required = true) Long orderId, @RequestBody(required = true) List<Long> bookIds) {
+    public ResponseEntity addBookToOrder(@PathVariable(name = "orderId", required = true) Long orderId, @RequestBody(required = true) List<Long> bookIds) {
         if (bookIds == null || bookIds.size() == 0) {
             return ResponseEntity.ok().body(Collections.emptyList());
         }
 
+        User user = getCurrentUser();
         if (orderId < 0) {
-            User user = getCurrentUser();
             Order order = new Order(user.getUserId(), OrderStatus.BASKET.name());
             order = orderRepository.save(order);
             orderId = order.getId();
+        }else{
+            //ищем заказ сразу и по его id и по пользователю, что бы исключить отправку заказа другим пользователем.
+            Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
+            if (!orderOpt.isPresent()) {
+                return ResponseEntity.badRequest().body("There is no order with id=" + orderId + " or this order is not belong you");
+            }
+
         }
 
         OrderContent orderContent = null;
@@ -104,6 +114,12 @@ public class OrderController {
     @ApiOperation(value = "Удаление книг(и) из заказа.JSON массив из id книг, удаляемых из заказа. При этом в запросе нужно передать id заказа(orderId).", response = ResponseEntity.class, tags = "deleteBookFromOrder")
     @DeleteMapping("/order/delete/book/{orderId}")
     public ResponseEntity deleteBookFromOrder(@PathVariable(name = "orderId") Long orderId, @RequestBody(required = true) List<Long> bookIds) {
+        User user = getCurrentUser();
+        //ищем заказ сразу и по его id и по пользователю, что бы исключить удаление заказа другим пользователем.
+        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
+        if (!orderOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There is no order with id=" + orderId + " or this order is not belong you");
+        }
         for (Long id : bookIds) {
             OrderContent orderContent = new OrderContent(orderId, id);
             orderContentRepository.delete(orderContent);

@@ -1,21 +1,24 @@
 package ru.bookstore.events;
 
 import org.springframework.context.ApplicationEvent;
-import ru.bookstore.domain.Notification;
+import ru.bookstore.domain.NotificationProvider;
 
 /**
  * Created by Rubanov.Maksim on 17.12.2019.
  */
 public class NotificationEvent extends ApplicationEvent {
 
-    private Notification notification;
+    private NotificationProvider notificationProvider;
 
-    public NotificationEvent(Object source, Notification notification) {
+    public  NotificationEvent(Object source, NotificationProvider notificationProvider) {
         super(source);
-        this.notification = notification;
+        this.notificationProvider = notificationProvider;
+
     }
 
-    public Notification getNotification() {
-        return notification;
+    public NotificationProvider getNotificationProvider() {
+        return notificationProvider;
     }
+
+
 }

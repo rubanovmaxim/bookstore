@@ -99,6 +99,41 @@ alter table  PUBLISHING_HOUSE
 
 
 -- Create table
+CREATE SEQUENCE genre_id_seq;
+
+create table GENRE
+(
+  ID  BIGINT not null DEFAULT nextval('genre_id_seq'),
+  NAME VARCHAR(50) not null
+) ;
+
+alter table  GENRE
+  add constraint GENRE_PK primary key (ID);
+--
+
+-- Create table
+CREATE SEQUENCE book_genres_id_seq;
+
+create table BOOK_GENRES
+(
+  ID  BIGINT not null DEFAULT nextval('book_genres_id_seq'),
+  BOOK_ID BIGINT not null,
+  GENRE_ID BIGINT not null
+);
+alter table  BOOK_GENRES
+  add constraint BOOK_GENRES_PK primary key (ID);
+
+alter table BOOK_GENRES
+  add constraint BOOK_GENRES_FK2 foreign key (BOOK_ID)
+  references BOOK (ID);
+
+alter table BOOK_GENRES
+  add constraint GENRE_GENRES_FK2 foreign key (GENRE_ID)
+  references GENRE (ID);
+
+--
+
+-- Create table
 CREATE SEQUENCE order_id_seq;
 
 create table "order"
@@ -175,6 +210,18 @@ values ( 1, 'Руслан и Людмила', 'Пушкин А.С.',200);
 
 insert into BOOK ( P_HOUSE_ID, NAME, AUTHOR, PRICE)
 values ( 2, 'Война и мир', 'Толстой Л.Н',300);
+
+
+INSERT INTO genre (NAME)  VALUES ('Проза');
+INSERT INTO genre (NAME)  VALUES ('Классика');
+INSERT INTO genre (NAME)  VALUES ('Фантастика');
+
+INSERT INTO book_genres ( book_id, genre_id) VALUES (1,2);
+INSERT INTO book_genres ( book_id, genre_id) VALUES (2,1);
+
+
+
+
 
 ---
 Commit;

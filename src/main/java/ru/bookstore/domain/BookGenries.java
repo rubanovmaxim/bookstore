@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="book_genres")
-public class BookGenres {
+public class BookGenries {
 
     @Id
     @GeneratedValue(generator = "book_genres_id_seq")
@@ -25,11 +25,11 @@ public class BookGenres {
     private Long genreId;
 
 
-    public BookGenres() {
+    public BookGenries() {
 
     }
 
-    public BookGenres(Long bookId, Long genreId) {
+    public BookGenries(Long bookId, Long genreId) {
         this.bookId = bookId;
         this.genreId = genreId;
     }

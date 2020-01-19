@@ -40,6 +40,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 // Включает Form-based аутентификацию
                 .formLogin()
+                .and()
+                .logout()
         ;
     }
 //

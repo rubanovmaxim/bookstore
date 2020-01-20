@@ -12,6 +12,7 @@ import ru.bookstore.repositories.GenreRepository;
 import java.util.Optional;
 
 @Component
+//@CacheConfig(cacheNames={"genreCache"})
 public class GenreCache {
 
     private GenreRepository genreRepository;

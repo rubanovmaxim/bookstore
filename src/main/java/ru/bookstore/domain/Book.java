@@ -16,7 +16,7 @@ public class Book {
 
     @JsonProperty("p_house_id")
     @Column(name = "P_HOUSE_ID")
-    private Long pPouseId;
+    private Long pHouseId;
 
 
     @JsonProperty("name")
@@ -37,8 +37,8 @@ public class Book {
 
     }
 
-    public Book(Long pPouseId, String name, String author, double price) {
-        this.pPouseId = pPouseId;
+    public Book(Long pHouseId, String name, String author, double price) {
+        this.pHouseId = pHouseId;
         this.name = name;
         this.author = author;
         this.price = price;
@@ -52,12 +52,12 @@ public class Book {
         this.id = id;
     }
 
-    public Long getpPouseId() {
-        return pPouseId;
+    public Long getPhouseId() {
+        return pHouseId;
     }
 
-    public void setpPouseId(Long pPouseId) {
-        this.pPouseId = pPouseId;
+    public void setPhouseId(Long pHouseId) {
+        this.pHouseId = pHouseId;
     }
 
     public String getName() {

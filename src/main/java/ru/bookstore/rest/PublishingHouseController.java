@@ -5,12 +5,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ru.bookstore.domain.PublishingHouse;
-import ru.bookstore.repositories.PublishingHouseRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,12 +23,9 @@ public class PublishingHouseController {
     private final static Logger LOGGER = LoggerFactory.getLogger(PublishingHouseController.class);
 
     private RestTemplate restTemplate = new RestTemplate();
-    private PublishingHouseRepository pblishingHouseRepository;
 
-    @Autowired
-    public PublishingHouseController(PublishingHouseRepository pblishingHouseRepository) {
-        this.pblishingHouseRepository = pblishingHouseRepository;
-    }
+    @Value("${bookstore.cache.url}")
+    private String cacheUrl;
 
 
     @ApiOperation(value = "Получение издательства по id", response = List.class, tags = "getPublishingHouse")
@@ -37,7 +33,7 @@ public class PublishingHouseController {
     public ResponseEntity<PublishingHouse> getPublishingHouse(@PathVariable(name = "id") long id) {
         ResponseEntity<PublishingHouse> result;
         try {
-            URI url = new URI("http://localhost:8083/publishinghouse/" + id);
+            URI url = new URI(cacheUrl + "/publishinghouse/" + id);
             result = restTemplate.getForEntity(url, PublishingHouse.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -53,7 +49,7 @@ public class PublishingHouseController {
         ResponseEntity<List<PublishingHouse>> result;
         Class clazz = new ArrayList<PublishingHouse>().getClass();
         try {
-            URI url = new URI("http://localhost:8083/publishinghouse/list");
+            URI url = new URI(cacheUrl + "/publishinghouse/list");
             result = restTemplate.getForEntity(url, clazz);
 
         } catch (URISyntaxException e) {
@@ -69,7 +65,7 @@ public class PublishingHouseController {
     public ResponseEntity<PublishingHouse> addPublishingHouse(@RequestBody(required = true) PublishingHouse pHouse) {
         ResponseEntity<PublishingHouse> result;
         try {
-            URI url = new URI("http://localhost:8083/publishinghouse/new");
+            URI url = new URI(cacheUrl + "/publishinghouse/new");
             result = restTemplate.postForEntity(url, pHouse, PublishingHouse.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -84,7 +80,7 @@ public class PublishingHouseController {
     public ResponseEntity<PublishingHouse> updatePublishingHouse(@RequestBody(required = true) PublishingHouse pHouse) {
         ResponseEntity<PublishingHouse> result;
         try {
-            URI url = new URI("http://localhost:8083/publishinghouse/update");
+            URI url = new URI(cacheUrl + "/publishinghouse/update");
             result = restTemplate.postForEntity(url, pHouse, PublishingHouse.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -98,7 +94,7 @@ public class PublishingHouseController {
     @DeleteMapping("/publishinghouse/delete/{pHouseId}")
     public ResponseEntity deletePublishingHouse(@PathVariable("pHouseId") long pHouseId) {
         try {
-            URI url = new URI("http://localhost:8083/publishinghouse/delete/" + pHouseId);
+            URI url = new URI(cacheUrl + "/publishinghouse/delete/" + pHouseId);
             restTemplate.delete(url);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -107,7 +103,6 @@ public class PublishingHouseController {
         }
         return ResponseEntity.ok().build();
     }
-
 
 
 }

@@ -5,13 +5,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ru.bookstore.domain.Genre;
 import ru.bookstore.domain.PublishingHouse;
-import ru.bookstore.repositories.GenreRepository;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,12 +24,9 @@ public class GenreController {
     private final static Logger LOGGER = LoggerFactory.getLogger(GenreController.class);
 
     private RestTemplate restTemplate = new RestTemplate();
-    private GenreRepository genreRepository;
 
-    @Autowired
-    public GenreController(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
+    @Value("${bookstore.cache.url}")
+    private String cacheUrl;
 
 
     @ApiOperation(value = "Получение жанра по id", response = List.class, tags = "getGenre")
@@ -38,7 +34,7 @@ public class GenreController {
     public ResponseEntity<Genre> getGenre(@PathVariable(name = "id") long id) {
         ResponseEntity<Genre> result;
         try {
-            URI url = new URI("http://localhost:8083/genre/" + id);
+            URI url = new URI(cacheUrl + "/genre/" + id);
             result = restTemplate.getForEntity(url, Genre.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -49,14 +45,13 @@ public class GenreController {
     }
 
 
-
     @ApiOperation(value = "Получение жанров по нескольким id", response = List.class, tags = "getGenresByIds")
     @PostMapping("/genre/list/ids")
     public ResponseEntity<List<Genre>> getGenresByIds(@RequestBody(required = true) List<Long> ids) {
         ResponseEntity<List<Genre>> result;
         Class clazz = new ArrayList<Genre>().getClass();
         try {
-            URI url = new URI("http://localhost:8083/genre/list/ids");
+            URI url = new URI(cacheUrl + "/genre/list/ids");
             result = restTemplate.postForEntity(url, ids, clazz);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -67,14 +62,13 @@ public class GenreController {
     }
 
 
-
     @ApiOperation(value = "Получение списка жанров", response = List.class, tags = "getGenreList")
     @GetMapping("/genre/list")
     public ResponseEntity<List<Genre>> getGenreList() {
         ResponseEntity<List<Genre>> result;
         Class clazz = new ArrayList<Genre>().getClass();
         try {
-            URI url = new URI("http://localhost:8083/genre/list");
+            URI url = new URI(cacheUrl + "/genre/list");
             result = restTemplate.getForEntity(url, clazz);
 
         } catch (URISyntaxException e) {
@@ -91,7 +85,7 @@ public class GenreController {
     public ResponseEntity<Genre> addGenre(@RequestBody(required = true) Genre genre) {
         ResponseEntity<Genre> result;
         try {
-            URI url = new URI("http://localhost:8083/genre/new");
+            URI url = new URI(cacheUrl + "/genre/new");
             result = restTemplate.postForEntity(url, genre, Genre.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -107,7 +101,7 @@ public class GenreController {
     public ResponseEntity<Genre> updateGenre(@RequestBody(required = true) Genre genre) {
         ResponseEntity<Genre> result;
         try {
-            URI url = new URI("http://localhost:8083/genre/update");
+            URI url = new URI(cacheUrl + "/genre/update");
             result = restTemplate.postForEntity(url, genre, Genre.class);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -121,7 +115,7 @@ public class GenreController {
     @DeleteMapping("/genre/delete/{id}")
     public ResponseEntity deleteGenre(@PathVariable("id") long id) {
         try {
-            URI url = new URI("http://localhost:8083/genre/delete/" + id);
+            URI url = new URI(cacheUrl + "/genre/delete/" + id);
             restTemplate.delete(url);
         } catch (URISyntaxException e) {
             e.printStackTrace();

@@ -22,8 +22,20 @@ spring:
     #    password: 111111
     driverClassName: org.postgresql.Driver
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: mm
+  cloud:
+    zoo
+
+
 bookstore:
   cache:
     url: http://localhost:8083
+
+kafka:
+  bootstrap-address: localhost:9092
+  topic-name: my_test
 
 

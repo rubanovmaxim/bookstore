@@ -5,6 +5,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import ru.bookstore.domain.enums.OrderStatus;
 import ru.bookstore.repositories.OrderContentRepository;
 import ru.bookstore.repositories.OrderRepository;
 import ru.bookstore.repositories.UserRepository;
+import ru.bookstore.services.MyBean;
 
 import java.util.*;
 
@@ -27,10 +30,17 @@ import java.util.*;
 @RestController
 public class OrderController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
+
     private OrderRepository orderRepository;
     private OrderContentRepository orderContentRepository;
     private UserRepository userRepository;
     private NotificationController notificationController;
+
+//
+//    @Autowired
+//    private MyBean myBean;
+//
 
     @Autowired
     public OrderController(OrderRepository orderRepository, OrderContentRepository orderContentRepository, UserRepository userRepository, NotificationController notificationController) {
@@ -71,7 +81,8 @@ public class OrderController {
         Notification notification = new Notification();
         notification.setUserId(user.getUserId());
         notification.setMessage("Congradulation! Your order " + orderId + " will be delivered in 2 days.");
-        notificationController.sendNotification(notification);
+//        myBean.sendMessage("Tu-Tu");
+//        notificationController.sendNotification(notification);
         return ResponseEntity.ok().build();
     }
 

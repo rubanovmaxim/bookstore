@@ -43,18 +43,16 @@ public class OrderController {
     private OrderRepository orderRepository;
     private OrderContentRepository orderContentRepository;
     private UserRepository userRepository;
-    private NotificationController notificationController;
 
     private Connection natsConnection;
 
     @Value("${nats.subject}") String subject;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository, OrderContentRepository orderContentRepository, UserRepository userRepository, NotificationController notificationController, Connection natsConnection) {
+    public OrderController(OrderRepository orderRepository, OrderContentRepository orderContentRepository, UserRepository userRepository,  Connection natsConnection) {
         this.orderRepository = orderRepository;
         this.orderContentRepository = orderContentRepository;
         this.userRepository = userRepository;
-        this.notificationController = notificationController;
         this.natsConnection = natsConnection;
     }
 
@@ -88,10 +86,10 @@ public class OrderController {
         // User user = userRepository.findById(order.getUserId()).get();
         Notification notification = new Notification();
         notification.setUserId(user.getUserId());
-        notification.setMessage("Congradulation! Your order " + orderId + " will be delivered in 2 days.");
+        notification.setMessage("Congradulation! Your order №" + orderId + " will be delivered in 2 days.");
 
+        //отправляем сообщение в брокер сообщений Nats
         sendMessage(notification);
-        //notificationController.sendNotification(notification);
         return ResponseEntity.ok().build();
     }
 

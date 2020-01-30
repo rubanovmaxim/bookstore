@@ -27,3 +27,6 @@ bookstore:
     url: http://localhost:8083
 
 
+nats:
+  usl: nats://localhost:4222
+  subject: notification

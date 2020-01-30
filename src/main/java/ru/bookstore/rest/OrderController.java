@@ -1,11 +1,16 @@
 package ru.bookstore.rest;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nats.client.Connection;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,29 +20,40 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.bookstore.domain.*;
+import ru.bookstore.domain.Notification;
+import ru.bookstore.domain.Order;
+import ru.bookstore.domain.OrderContent;
+import ru.bookstore.domain.User;
 import ru.bookstore.domain.enums.OrderStatus;
 import ru.bookstore.repositories.OrderContentRepository;
 import ru.bookstore.repositories.OrderRepository;
 import ru.bookstore.repositories.UserRepository;
 
-import java.util.*;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Api(tags = "OrderController", description = "Контроллер для работы с заказами")
 @RestController
 public class OrderController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
+
     private OrderRepository orderRepository;
     private OrderContentRepository orderContentRepository;
     private UserRepository userRepository;
-    private NotificationController notificationController;
+
+    private Connection natsConnection;
+
+    @Value("${nats.subject}") String subject;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository, OrderContentRepository orderContentRepository, UserRepository userRepository, NotificationController notificationController) {
+    public OrderController(OrderRepository orderRepository, OrderContentRepository orderContentRepository, UserRepository userRepository,  Connection natsConnection) {
         this.orderRepository = orderRepository;
         this.orderContentRepository = orderContentRepository;
         this.userRepository = userRepository;
-        this.notificationController = notificationController;
+        this.natsConnection = natsConnection;
     }
 
     @ApiOperation(value = "Информация по заказу.Список книг в заказе. В запросе нужно передать id заказа(orderId).", response = List.class, tags = "getOrderInfo")
@@ -53,7 +69,7 @@ public class OrderController {
     public ResponseEntity confirmOrder(@PathVariable(name = "orderId", required = true) Long orderId) {
         User user = getCurrentUser();
         //ищем заказ сразу и по его id и по пользователю, что бы исключить отправку заказа другим пользователем.
-        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
+        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId, user.getUserId());
         if (!orderOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There is no order with id=" + orderId + " or this order is not belong you");
         }
@@ -61,17 +77,19 @@ public class OrderController {
         Order order = orderOpt.get();
         // проверяем , что заказ находится в состоянии "Корзина", что бы его можно было подтвердить.
         //TODO передделать впоследствии на ORDER_FORMING(перейти к оформлению), когда это будет реализовано
-         if(! order.getStatus().equalsIgnoreCase(OrderStatus.BASKET.name())){
+        if (!order.getStatus().equalsIgnoreCase(OrderStatus.BASKET.name())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order not in status=BASKET to be confirmed");
         }
         order.setStatus(OrderStatus.ORDER_CONFIRMED.name());
         order = orderRepository.save(order);
 
-       // User user = userRepository.findById(order.getUserId()).get();
+        // User user = userRepository.findById(order.getUserId()).get();
         Notification notification = new Notification();
         notification.setUserId(user.getUserId());
-        notification.setMessage("Congradulation! Your order " + orderId + " will be delivered in 2 days.");
-        notificationController.sendNotification(notification);
+        notification.setMessage("Congradulation! Your order №" + orderId + " will be delivered in 2 days.");
+
+        //отправляем сообщение в брокер сообщений Nats
+        sendMessage(notification);
         return ResponseEntity.ok().build();
     }
 
@@ -91,9 +109,9 @@ public class OrderController {
             Order order = new Order(user.getUserId(), OrderStatus.BASKET.name());
             order = orderRepository.save(order);
             orderId = order.getId();
-        }else{
+        } else {
             //ищем заказ сразу и по его id и по пользователю, что бы исключить отправку заказа другим пользователем.
-            Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
+            Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId, user.getUserId());
             if (!orderOpt.isPresent()) {
                 return ResponseEntity.badRequest().body("There is no order with id=" + orderId + " or this order is not belong you");
             }
@@ -116,7 +134,7 @@ public class OrderController {
     public ResponseEntity deleteBookFromOrder(@PathVariable(name = "orderId") Long orderId, @RequestBody(required = true) List<Long> bookIds) {
         User user = getCurrentUser();
         //ищем заказ сразу и по его id и по пользователю, что бы исключить удаление заказа другим пользователем.
-        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId,user.getUserId());
+        Optional<Order> orderOpt = orderRepository.findByIdAndUserId(orderId, user.getUserId());
         if (!orderOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("There is no order with id=" + orderId + " or this order is not belong you");
         }
@@ -136,6 +154,15 @@ public class OrderController {
         return userRepository.findByUserName(userDetails.getUsername());
     }
 
+    private void sendMessage(Notification notification) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json = objectMapper.writeValueAsString(notification);
+            natsConnection.publish(subject, json.getBytes());
+            natsConnection.flush(Duration.ofMillis(20));
+        } catch (Exception e) {
+            LOGGER.equals(e);
+        }
+    }
 
 }
-

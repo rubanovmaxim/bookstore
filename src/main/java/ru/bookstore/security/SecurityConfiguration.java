@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
@@ -28,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/registration").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(
-                        "/authentication",
+                "/authentication",
                 "/order/confirm/**",
                 "/order/add/book/**",
                 "/books/delete",
@@ -58,15 +57,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
 
 
-
-
     @Autowired
     DataSource dataSource;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return  new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
+
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
@@ -75,7 +73,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery(
                         "select username, authority from authorities where username=?");
     }
-
 
 
 }

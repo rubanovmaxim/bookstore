@@ -19,6 +19,11 @@ public class Main {
         return "home";
     }
 
+    @GetMapping("/message")
+    public String getMessage() {
+        return "Working ...!!";
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }

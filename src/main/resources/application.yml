@@ -30,3 +30,14 @@ bookstore:
 nats:
   usl: nats://localhost:4222
   subject: notification
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+

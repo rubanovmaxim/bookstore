@@ -2,9 +2,7 @@ package ru.bookstore.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.bookstore.domain.Order;
-
-import java.util.Optional;
+import ru.bookstore.domain.Authority;
 
 
 /**
@@ -12,7 +10,6 @@ import java.util.Optional;
  */
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface AuthorityRepository extends JpaRepository<Authority, String> {
 
-    public Optional<Order> findByIdAndUserId(Long orderId, Long userId);
 }

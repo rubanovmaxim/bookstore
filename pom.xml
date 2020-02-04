@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.1.RELEASE</version>
+        <version>2.2.2.RELEASE</version>
     </parent>
 
     <dependencies>
@@ -72,13 +72,11 @@
             <version>7.20.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.github.taksan/skype-java-api -->
         <dependency>
-            <groupId>com.github.taksan</groupId>
-            <artifactId>skype-java-api</artifactId>
-            <version>1.7</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.2.2.RELEASE</version>
         </dependency>
-
 
     </dependencies>
 

@@ -21,3 +21,9 @@ spring:
     #    username: webedi
     #    password: 111111
     driverClassName: org.postgresql.Driver
+
+bookstore:
+  cache:
+    url: http://localhost:8083
+
+

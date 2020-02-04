@@ -3,6 +3,7 @@ package ru.bookstore.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Created by Rubanov.Maksim on 03.01.2020.
@@ -10,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="genre")
-public class Genre {
+public class Genre implements Serializable {
 
     @Id
     @GeneratedValue(generator = "genre_id_seq")
